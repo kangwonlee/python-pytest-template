@@ -1,6 +1,6 @@
 # begin Dockerfile
 
-FROM ghcr.io/kangwonlee/edu-base-raw:5ea7aa8
+FROM ghcr.io/kangwonlee/edu-base-raw:14e3e21
 
 USER root
 
