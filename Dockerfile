@@ -4,9 +4,10 @@ FROM ghcr.io/kangwonlee/edu-base-raw:60dfc33
 
 USER root
 
-RUN git clone --depth=1 --branch v0.3.13 https://github.com/kangwonlee/gemini-python-tutor /app/temp/ \
+RUN git clone --depth=1 --branch v0.4.1 https://github.com/kangwonlee/gemini-python-tutor /app/temp/ \
     && mkdir -p /app/ai_tutor/ \
     && mv /app/temp/*.py /app/ai_tutor \
+    && mv /app/temp/prompt_pipeline/ /app/ai_tutor/prompt_pipeline/ \
     && mv /app/temp/locale/ /app/ai_tutor/locale/
 
 RUN uv pip install --system --requirement /app/temp/requirements.txt \
