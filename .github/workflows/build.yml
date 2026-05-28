@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write  # needed to push the built/* tag
   packages: write
 
 jobs:
@@ -57,6 +57,7 @@ jobs:
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           GHCR_IMAGE="ghcr.io/${{ github.repository }}:${SHORT_SHA}"
           GHCR_LATEST="ghcr.io/${{ github.repository }}:latest"
+          echo "SHORT_SHA=${SHORT_SHA}" >> $GITHUB_ENV
           echo "GHCR_IMAGE=${GHCR_IMAGE}" >> $GITHUB_ENV
           echo "GHCR_IMAGE=${GHCR_IMAGE}" >> $GITHUB_OUTPUT
           echo "GHCR_LATEST=${GHCR_LATEST}" >> $GITHUB_ENV
@@ -73,6 +74,15 @@ jobs:
           push: true
           secrets: |
             "GIT_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Stamp built/<owner>/<repo>/<sha7> tag
+        if: success()
+        run: |
+          tag="built/${GITHUB_REPOSITORY}/${SHORT_SHA}"
+          git config user.email "actions@github.com"
+          git config user.name  "github-actions[bot]"
+          git tag "$tag"
+          git push origin "refs/tags/${tag}"
     outputs:
       GHCR_IMAGE_NAME: ${{ steps.prep.outputs.GHCR_IMAGE }}
 
